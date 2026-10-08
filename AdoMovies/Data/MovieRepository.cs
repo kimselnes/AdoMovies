@@ -4,7 +4,15 @@ using System.Text;
 
 namespace AdoMovies.Data
 {
-    internal class MovieRepository
+    public class MovieRepository
     {
+        private readonly string _connectionString;
+
+        public MovieRepository(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+
     }
 }
