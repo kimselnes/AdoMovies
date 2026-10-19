@@ -36,6 +36,10 @@ namespace AdoMovies.UI
                         AddMovie(_movieRepository);
                         break;
 
+                    case "4":
+                        DeleteMovie(_movieRepository);
+                        break;
+
                     case "0":
                         isRunning = false;
                         break;
@@ -149,10 +153,99 @@ namespace AdoMovies.UI
             Console.Clear();
             Console.WriteLine("-- Lägg till film --");
             Console.WriteLine();
-            Console.WriteLine("0. Gå tillbaka");
-            Console.WriteLine();
             Console.Write("Titel: ");
-            string title = Console.ReadLine();
+            string title = Console.ReadLine()?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                Console.WriteLine("\nTiteln får inte vara tom.");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.Write("Utgivningsår: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int releaseYear))
+            {
+                Console.WriteLine("Ogiltigt årtal.");
+                Console.ReadKey();
+                return;
+            }
+
+            var genres = movieRepository.GetAllGenres();
+
+            Console.WriteLine("\nTillgängliga genres:");
+
+            foreach (var genre in genres)
+            {
+                Console.WriteLine($"{genre.Id}. {genre.Name}");
+            }
+
+            Console.Write("\nVälj genre-id: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int genreId) || 
+                !genres.Any(g => g.Id == genreId))
+            {
+                Console.WriteLine("Ogiltigt genre-id.");
+                Console.ReadKey();
+                return;
+            }
+
+            var movie = new Movie
+            {
+                Title = title,
+                ReleaseYear = releaseYear,
+                GenreId = genreId
+            };
+
+            int affectedRows = movieRepository.AddMovie(movie);
+
+            Console.WriteLine();
+            Console.WriteLine(affectedRows == 1 ? "Filmen lades till." : "Filmen kunde inte läggas till.");
+            Console.ReadKey();
+        }
+
+        private static void DeleteMovie(MovieRepository movieRepository)
+        {
+            Console.Clear();
+            Console.WriteLine("-- Ta bort film --");
+            Console.WriteLine();
+
+            var movies = movieRepository.GetAllMovies();
+
+            if (movies.Count == 0)
+            {
+                Console.WriteLine("Det finns inga filmer");
+                Console.ReadKey();
+                return;
+            }
+
+            foreach (var movie in movies)
+            {
+                Console.WriteLine($"{movie.Id}. {movie.Title} ({movie.ReleaseYear}) - {movie.Genre?.Name}");
+            }
+            Console.WriteLine("0. Gå tillbaka\n");
+
+            Console.Write("Ange id för filmen som ska tas bort: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int movieId))
+            {
+                Console.WriteLine("Ogiltigt id.");
+                Console.ReadKey();
+                return;
+            }
+
+            if (movieId == 0)
+            {
+                var movieMenu = new MovieMenu(movieRepository);
+                movieMenu.Run();
+            }
+
+            int affectedRows = movieRepository.DeleteMovie(movieId);
+
+            Console.WriteLine();
+            Console.WriteLine(affectedRows == 1 ? "Filmen togs bort." : "Ingen film med detta id hittades.");
+            Console.ReadKey();
         }
     }
 }
