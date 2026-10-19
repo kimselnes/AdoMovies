@@ -1,7 +1,6 @@
 ﻿using AdoMovies.Data;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using AdoMovies.Models;
+using Microsoft.Data.SqlClient;
 
 namespace AdoMovies.UI
 {
@@ -21,22 +20,12 @@ namespace AdoMovies.UI
             {
                 ShowMenu();
 
-                //if (int.TryParse(Console.ReadLine(), out int choice))
-                //{
-                //    //switch (choice)
-                //}
-                //else
-                //{
-                //    Console.WriteLine("Ogiltigt val. Tyck ENTER för att försöka igen.");
-                //    Console.ReadLine();
-                //}
-
                 string? choice2 = Console.ReadLine();
 
                 switch (choice2)
                 {
                     case "1":
-                        ShowAllMovies();
+                        ShowAllMovies(_movieRepository);
                         break;
 
                     case "0":
@@ -64,9 +53,48 @@ namespace AdoMovies.UI
             Console.Write("Välj: ");
         }
 
-        private static void ShowAllMovies()
+        private static void ShowAllMovies(MovieRepository movieRepository)
         {
+            Console.Clear();
+            Console.WriteLine("-- Alla filmer --");
+            Console.WriteLine();
+            Console.WriteLine("0. Gå tillbaka");
+            Console.WriteLine();
+            Console.WriteLine("- - - - - - - - - - - - - - - - - -");
+            Console.WriteLine();
 
+            // Implementera logik för att hämta och visa alla filmer från databasen här.
+            //var movies = _movieRepository.GetAllMovies();
+            //foreach (var movie in movies)
+            //{
+            //    Console.WriteLine($"- {movie.Title} ({movie.Year})");
+            //}
+
+            List<Movie> movies = movieRepository.GetAllMovies();
+
+            if (movies.Count == 0)
+            {
+                Console.WriteLine("Det finns inga filmer");
+                return;
+            }
+
+            foreach (var movie in movies)
+            {
+                Console.WriteLine($"{movie.Title} ({movie.ReleaseYear}) - {movie.Genre?.Name}");
+            }
+
+            string? choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "0":
+                    ShowMenu();
+                    break;
+
+                default:
+                    Console.WriteLine("Ogiltigt val. Tyck ENTER för att försöka igen.");
+                    Console.ReadLine();
+                    break;
+            }
         }
     }
 }

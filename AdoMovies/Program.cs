@@ -1,6 +1,5 @@
 ﻿using AdoMovies.Data;
 using AdoMovies.UI;
-using Microsoft.Data.SqlClient;
 
 namespace AdoMovies
 {
