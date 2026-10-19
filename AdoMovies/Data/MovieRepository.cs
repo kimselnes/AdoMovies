@@ -50,6 +50,37 @@ namespace AdoMovies.Data
             return movies;
         }
 
+        public List<Movie> GetMoviesByGenre(string genreName)
+        {
+            string sql = "" +
+                "SELECT " +
+                    "m.Id, " +
+                    "m.Title, " +
+                    "m. ReleaseYear, " +
+                    "m.GenreId, " +
+                    "g.Name AS GenreName " +
+                "FROM Movies as m " +
+                "INNER JOIN Genres AS g ON g.Id = m.GenreId " +
+                "WHERE g.Name = @GenreName " +
+                "ORDER BY m.Title" +
+                "";
+
+            var movies = new List<Movie>();
+
+            using var connection = new SqlConnection(_connectionString);
+            using var command = new SqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@GenreName", genreName);
+            connection.Open();
+
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                movies.Add(MapMovie(reader));
+            }
+
+            return movies;
+        }
+
         public static Movie MapMovie(SqlDataReader reader)
         {
             return new Movie

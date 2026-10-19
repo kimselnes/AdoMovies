@@ -28,6 +28,14 @@ namespace AdoMovies.UI
                         ShowAllMovies(_movieRepository);
                         break;
 
+                    case "2":
+                        ShowMoviesByGenre(_movieRepository);
+                        break;
+
+                    case "3":
+                        AddMovie(_movieRepository);
+                        break;
+
                     case "0":
                         isRunning = false;
                         break;
@@ -75,6 +83,7 @@ namespace AdoMovies.UI
             if (movies.Count == 0)
             {
                 Console.WriteLine("Det finns inga filmer");
+                Console.ReadKey();
                 return;
             }
 
@@ -95,6 +104,55 @@ namespace AdoMovies.UI
                     Console.ReadLine();
                     break;
             }
+        }
+
+        private static void ShowMoviesByGenre(MovieRepository movieRepository)
+        {
+            Console.Clear();
+            Console.WriteLine("-- Sök filmer efter genre --");
+            Console.WriteLine();
+            Console.WriteLine("0. Gå tillbaka");
+            Console.WriteLine();
+            Console.Write("Ange Genre: ");
+            string genreName = Console.ReadLine();
+            Console.WriteLine();
+
+            if (string.IsNullOrWhiteSpace(genreName))
+            {
+                Console.WriteLine("\nDu angav fel genre.");
+                Console.ReadKey();
+                return;
+            }
+
+            var movies = movieRepository.GetMoviesByGenre(genreName);
+
+            if (movies.Count == 0)
+            {
+                Console.WriteLine("Inga filmer hittades");
+                Console.ReadKey();
+                ShowMoviesByGenre(movieRepository);
+                return;
+            }
+
+            Console.WriteLine("- - - - - - - - - - - - - - - - - -\n");
+
+            foreach (var movie in movies)
+            {
+                Console.WriteLine($"{movie.Title} ({movie.ReleaseYear}) - {movie.Genre?.Name}");
+            }
+
+            Console.ReadKey();
+        }
+
+        private static void AddMovie(MovieRepository movieRepository)
+        {
+            Console.Clear();
+            Console.WriteLine("-- Lägg till film --");
+            Console.WriteLine();
+            Console.WriteLine("0. Gå tillbaka");
+            Console.WriteLine();
+            Console.Write("Titel: ");
+            string title = Console.ReadLine();
         }
     }
 }
