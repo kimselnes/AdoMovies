@@ -40,11 +40,6 @@ namespace AdoMovies.Data
             while (reader.Read())
             {
                 movies.Add(MapMovie(reader));
-                //string name = reader.GetString(1);
-                //string year = reader.GetString(2);
-                //int genreId = reader.GetInt32(3);
-
-                //Console.WriteLine($"- {name} ({year})");
             }
 
             return movies;

@@ -75,13 +75,6 @@ namespace AdoMovies.UI
             Console.WriteLine("- - - - - - - - - - - - - - - - - -");
             Console.WriteLine();
 
-            // Implementera logik för att hämta och visa alla filmer från databasen här.
-            //var movies = _movieRepository.GetAllMovies();
-            //foreach (var movie in movies)
-            //{
-            //    Console.WriteLine($"- {movie.Title} ({movie.Year})");
-            //}
-
             List<Movie> movies = movieRepository.GetAllMovies();
 
             if (movies.Count == 0)
